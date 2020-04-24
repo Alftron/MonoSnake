@@ -62,15 +62,15 @@ namespace Snake
             }
 
             // Body
-            foreach (Piece bodyPart in snake.GetPieces())
+            bool hit = false;
+            for (int x = 1; x < snake.GetPieces().Count - 1; x++)
             {
-                if (snakeHeadPos == bodyPart.GetPosition())
+                if (snakeHeadPos == snake.GetPieces()[x].GetPosition())
                 {
-                    // Hit a piece of the body so lose a life and reset the snake this needs a little more consideration though
-                    //snake.ResetSnake();
-                    //break;
+                    hit = true;
                 }
             }
+            if (hit) snake.ResetSnake();
 
             // Food
             if (snakeHeadPos == food.GetPosition())
