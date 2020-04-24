@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace Snake
 {
@@ -39,6 +40,39 @@ namespace Snake
             graphics.PreferredBackBufferWidth = 800;
             graphics.ApplyChanges();
 
+        }
+
+        private void CheckCollision()
+        {
+            // Grab the position of the snake head first
+            Vector2 snakeHeadPos = snake.GetPieces()[0].GetPosition();
+            // Check collision
+            // Walls
+            if (snakeHeadPos.X < 0 || snakeHeadPos.X >= graphics.GraphicsDevice.Viewport.Width ||
+                snakeHeadPos.Y < 0 || snakeHeadPos.Y >= graphics.GraphicsDevice.Viewport.Height)
+            {
+                // Hit one of the walls so lose a life and reset the snake
+                snake.ResetSnake();
+            }
+
+            // Body
+            List<Piece> snakePieces = snake.GetPieces();
+            foreach (Piece bodyPart in snakePieces)
+            {
+                if (snakeHeadPos == bodyPart.GetPosition())
+                {
+                    // Hit a piece of the body so lose a life and reset the snake this needs a little more consideration though
+                    //snake.ResetSnake();
+                    //break;
+                }
+            }
+
+            // Food
+            if (snakeHeadPos == food.GetPosition())
+            {
+                // Hit a piece of food so grow, increase score, and redraw food
+                snake.Grow();
+            }
         }
 
         /// <summary>
@@ -126,6 +160,7 @@ namespace Snake
             {
                 milliSinceUpdate = 0;
                 snake.Update();
+                this.CheckCollision();
             }
 
             base.Update(gameTime);

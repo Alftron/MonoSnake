@@ -29,6 +29,11 @@ namespace Snake
             spriteBatch.End();
         }
 
+        public Vector2 GetPosition()
+        {
+            return this.position;
+        }
+
         private void SetTexture(GraphicsDevice graphics, int foodSize)
         {
             // Create texture

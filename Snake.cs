@@ -20,6 +20,7 @@ namespace Snake
     class Snake
     {
         private SpriteBatch spriteBatch;
+        private GraphicsDevice graphics;
 
         private static Texture2D snakeTexture;
         private List<Piece> snakePieces; // Container for all the snake pieces including head
@@ -30,6 +31,7 @@ namespace Snake
 
         public Snake(GraphicsDevice graphics, SpriteBatch spriteBatch, int snakeSize)
         {
+            this.graphics = graphics;
             this.spriteBatch = spriteBatch;
 
             // Set the texture for the snake!
@@ -38,21 +40,8 @@ namespace Snake
             this.snakeSize = snakeSize;
             // Create the snake container
             snakePieces = new List<Piece>();
-            // Add all the new pieces to the snake container that we want
-            Vector2 initialPos = new Vector2
-            {
-                X = graphics.Viewport.Width / 2,
-                Y = graphics.Viewport.Height / 2
-            };
-            for (int x = 0; x < initialPieces; x++)
-            {
-                // Create a new piece
-                snakePieces.Add(new Piece(initialPos));
-                // Change the vector for the other initial pieces
-                initialPos.X -= snakeSize;
-            }
-            // Ensure the snake isn't moving to start with
-            this.SetDirection(Direction.None);
+
+            this.ResetSnake();
         }
 
         public void Draw()
@@ -67,10 +56,48 @@ namespace Snake
 
         public void Update()
         {
+            // Move the snake
             if (this.direction != Direction.None)
             {
                 this.Move();
             }
+        }
+
+        public List<Piece> GetPieces()
+        {
+            // Returns the snake pieces
+            return snakePieces;
+        }
+
+        public void Grow()
+        {
+            // Eaten some food so increase the length but be wary of the snaking pattern/direction
+        }
+
+        public void ResetSnake()
+        {
+            // Give an initial position that's in the center
+            Vector2 initialPos = new Vector2()
+            {
+                X = graphics.Viewport.Width / 2,
+                Y = graphics.Viewport.Height / 2
+            };
+
+            // Empty out the snake if we have to!
+            if (snakePieces.Count > 0)
+            {
+                snakePieces.Clear();
+            }
+            // Add all the pieces to the snake container
+            for (int x = 0; x < initialPieces; x++)
+            {
+                // Create a new piece
+                snakePieces.Add(new Piece(initialPos));
+                // Change the vector for the other initial pieces
+                initialPos.X -= snakeSize;
+            }
+            // Ensure the snake isn't moving to start with
+            this.SetDirection(Direction.None);
         }
 
         public void SetDirection(Direction dir)
@@ -92,11 +119,6 @@ namespace Snake
             {
                 this.direction = Direction.Right;
             }
-        }
-
-        private void Grow()
-        {
-
         }
 
         private void Move()
@@ -134,11 +156,6 @@ namespace Snake
                 default:
                     break;
             }
-        }
-
-        private void ResetSnake()
-        {
-
         }
         
         private void SetTexture(GraphicsDevice graphics, int snakeSize)
