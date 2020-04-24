@@ -200,7 +200,16 @@ namespace Snake
             Color[] colorData = new Color[snakeSize * snakeSize];
             for (int x = 0; x < colorData.Length; x++)
             {
-                colorData[x] = Color.White;
+                // Black top, bottom, left side then right side
+                if (x < 10 || x > 89 || x % 10 == 0 || x % 10 == 9)
+                {
+                    colorData[x] = Color.Black;
+                }
+                else
+                {
+                    colorData[x] = Color.White;
+                }
+                //colorData[x] = Color.White;
             }
             snakeTexture.SetData(colorData);
         }
