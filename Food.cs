@@ -11,21 +11,21 @@ namespace Snake
     class Food
     {
         private SpriteBatch spriteBatch;
+        private GraphicsDevice graphics;
 
         private static Texture2D foodTexture;
         private Vector2 position;
 
-        public Food(GraphicsDevice graphics, SpriteBatch spriteBatch, int foodSize, Vector2 position)
+        public Food(GraphicsDevice graphics, SpriteBatch spriteBatch, int foodSize)
         {
+            this.graphics = graphics;
             this.spriteBatch = spriteBatch;
             this.SetTexture(graphics, foodSize);
-            this.position = position;
         }
 
         public void Draw()
         {
             spriteBatch.Begin();
-            // TODO: Random positioning of food 
             spriteBatch.Draw(foodTexture, position, Color.Red);
             spriteBatch.End();
         }
@@ -33,6 +33,11 @@ namespace Snake
         public Vector2 GetPosition()
         {
             return this.position;
+        }
+
+        public void SetPosition(Vector2 pos)
+        {
+            this.position = pos;
         }
 
         private void SetTexture(GraphicsDevice graphics, int foodSize)
