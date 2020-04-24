@@ -15,17 +15,18 @@ namespace Snake
         private static Texture2D foodTexture;
         private Vector2 position;
 
-        public Food(GraphicsDevice graphics, SpriteBatch spriteBatch, int foodSize)
+        public Food(GraphicsDevice graphics, SpriteBatch spriteBatch, int foodSize, Vector2 position)
         {
             this.spriteBatch = spriteBatch;
             this.SetTexture(graphics, foodSize);
+            this.position = position;
         }
 
         public void Draw()
         {
             spriteBatch.Begin();
             // TODO: Random positioning of food 
-            spriteBatch.Draw(foodTexture, new Vector2(0, 0), Color.Red);
+            spriteBatch.Draw(foodTexture, position, Color.Red);
             spriteBatch.End();
         }
 

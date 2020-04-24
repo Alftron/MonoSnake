@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 
 namespace Snake
@@ -21,15 +22,19 @@ namespace Snake
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        private Snake snake;
+        private Food food;
+        GameState gameState;
+        Random randomNum;
+
         private const int snakeSize = 10;
         private const int foodSize = 10;
+        private const int scoreIncrease = 10;
         private const int updateInterval = 50;
 
         private int milliSinceUpdate = 0;
 
-        private Snake snake;
-        private Food food;
-        GameState gameState;
+        private int score = 0;
 
         public SnakeGame()
         {
@@ -71,8 +76,29 @@ namespace Snake
             if (snakeHeadPos == food.GetPosition())
             {
                 // Hit a piece of food so grow, increase score, and redraw food
+                // Grow snake
                 snake.Grow();
+                // Redraw food
+                this.RespawnFood();
+                // Increase the score
+                score += scoreIncrease;
             }
+        }
+
+        private void RespawnFood()
+        {
+            // Create a new food instance but only on a valid space
+            bool validSpace = false;
+            Vector2 newPos = new Vector2();
+            while (!validSpace)
+            {
+                newPos.X = 350;
+                newPos.Y = 350;
+
+                // Check the apple isn't on top of the snake
+                validSpace = true;
+            }
+            food = new Food(graphics.GraphicsDevice, spriteBatch, foodSize, newPos);
         }
 
         /// <summary>
@@ -100,7 +126,8 @@ namespace Snake
 
             // TODO: use this.Content to load your game content here
             snake = new Snake(graphics.GraphicsDevice, spriteBatch, snakeSize);
-            food = new Food(graphics.GraphicsDevice, spriteBatch, foodSize);
+            food = new Food(graphics.GraphicsDevice, spriteBatch, foodSize, new Vector2(50,50));
+            randomNum = new Random();
             gameState = GameState.Stopped;
         }
 
@@ -132,7 +159,7 @@ namespace Snake
                 snake.SetDirection(Direction.Right);
             }
 
-            // Check for keyboard here but only if we need to!
+            // Check for keyboard and do stuff here but only if we need to!
             if (gameState == GameState.Running)
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.Up))
@@ -151,16 +178,15 @@ namespace Snake
                 {
                     snake.SetDirection(Direction.Right);
                 }
-            }
 
-            // TODO: Add your update logic here
-            milliSinceUpdate += gameTime.ElapsedGameTime.Milliseconds;
+                milliSinceUpdate += gameTime.ElapsedGameTime.Milliseconds;
 
-            if (milliSinceUpdate >= updateInterval && gameState == GameState.Running)
-            {
-                milliSinceUpdate = 0;
-                snake.Update();
-                this.CheckCollision();
+                if (milliSinceUpdate >= updateInterval && gameState == GameState.Running)
+                {
+                    milliSinceUpdate = 0;
+                    snake.Update();
+                    this.CheckCollision();
+                }
             }
 
             base.Update(gameTime);
