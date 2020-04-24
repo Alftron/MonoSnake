@@ -56,8 +56,9 @@ namespace Snake
             if (snakeHeadPos.X < 0 || snakeHeadPos.X >= graphics.GraphicsDevice.Viewport.Width ||
                 snakeHeadPos.Y < 0 || snakeHeadPos.Y >= graphics.GraphicsDevice.Viewport.Height)
             {
-                // Hit one of the walls so lose a life and reset the snake
+                // Hit one of the walls so lose a life, reset snake and food
                 snake.ResetSnake();
+                this.SpawnFood();
             }
 
             // Body
@@ -92,10 +93,11 @@ namespace Snake
             while (!validSpace)
             {
                 validSpace = true;
-                newPos.X = randomNum.Next(((graphics.GraphicsDevice.Viewport.Width / 10) + 1)) * foodSize;
-                newPos.Y = randomNum.Next(((graphics.GraphicsDevice.Viewport.Height / 10) + 1)) * foodSize;
+                newPos.X = randomNum.Next((((graphics.GraphicsDevice.Viewport.Width - foodSize) / 10) + 1)) * foodSize;
+                newPos.Y = randomNum.Next((((graphics.GraphicsDevice.Viewport.Height - foodSize) / 10) + 1)) * foodSize;
+                Console.WriteLine(newPos.ToString());
 
-                // Check the apple isn't on top of the snake
+                // Check the food isn't on top of the snake
                 foreach (Piece part in snake.GetPieces())
                 {
                     if (newPos == part.GetPosition())
