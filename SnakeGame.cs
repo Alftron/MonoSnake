@@ -30,7 +30,10 @@ namespace Snake
         private const int snakeSize = 10;
         private const int foodSize = 10;
         private const int scoreIncrease = 10;
-        private const int updateInterval = 50;
+        private const int initialSpeed = 60;
+        private const int maxSpeed = 18;
+        private const int speedIncrease = 1;
+        private int updateInterval = 60;
 
         private int milliSinceUpdate = 0;
 
@@ -59,6 +62,8 @@ namespace Snake
                 // Hit one of the walls so lose a life, reset snake and food
                 snake.ResetSnake();
                 this.SpawnFood();
+                updateInterval = initialSpeed;
+                gameState = GameState.Stopped;
             }
 
             // Body
@@ -70,7 +75,14 @@ namespace Snake
                     hit = true;
                 }
             }
-            if (hit) snake.ResetSnake();
+            if (hit)
+            {
+                // Hit body so lose a life, reset snake and food
+                snake.ResetSnake();
+                this.SpawnFood();
+                updateInterval = initialSpeed;
+                gameState = GameState.Stopped;
+            }
 
             // Food
             if (snakeHeadPos == food.GetPosition())
@@ -82,6 +94,16 @@ namespace Snake
                 this.SpawnFood();
                 // Increase the score
                 score += scoreIncrease;
+                // Increase the speed
+                this.IncreaseSpeed();
+            }
+        }
+
+        private void IncreaseSpeed()
+        {
+            if (updateInterval > maxSpeed)
+            {
+                this.updateInterval -= speedIncrease;
             }
         }
 
