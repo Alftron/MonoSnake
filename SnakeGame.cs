@@ -95,7 +95,6 @@ namespace Snake
                 validSpace = true;
                 newPos.X = randomNum.Next((((graphics.GraphicsDevice.Viewport.Width - foodSize) / 10) + 1)) * foodSize;
                 newPos.Y = randomNum.Next((((graphics.GraphicsDevice.Viewport.Height - foodSize) / 10) + 1)) * foodSize;
-                Console.WriteLine(newPos.ToString());
 
                 // Check the food isn't on top of the snake
                 foreach (Piece part in snake.GetPieces())
@@ -158,15 +157,45 @@ namespace Snake
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // Set game to run if enter is pressed
-            if (Keyboard.GetState().IsKeyDown(Keys.Enter) && gameState == GameState.Stopped)
+            // Set game to run in direction pressed to start, bit gross but it works
+            if (gameState == GameState.Stopped)
             {
-                // Start the game off
-                gameState = GameState.Running;
-                // Set a direction to get the snake moving
-                snake.SetDirection(Direction.Right);
-                // Spawn some food
-                this.SpawnFood();
+                if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                {
+                    // Start the game off (again)
+                    gameState = GameState.Running;
+                    // Set a direction to get the snake moving
+                    snake.SetDirection(Direction.Up);
+                    // Spawn some food
+                    this.SpawnFood();
+                }
+                else if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                {
+                    // Start the game off (again)
+                    gameState = GameState.Running;
+                    // Set a direction to get the snake moving
+                    snake.SetDirection(Direction.Down);
+                    // Spawn some food
+                    this.SpawnFood();
+                }
+                else if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                {
+                    // Start the game off (again)
+                    gameState = GameState.Running;
+                    // Set a direction to get the snake moving
+                    snake.SetDirection(Direction.Left);
+                    // Spawn some food
+                    this.SpawnFood();
+                }
+                else if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                {
+                    // Start the game off (again)
+                    gameState = GameState.Running;
+                    // Set a direction to get the snake moving
+                    snake.SetDirection(Direction.Right);
+                    // Spawn some food
+                    this.SpawnFood();
+                }
             }
 
             // Check for keyboard and do stuff here but only if we need to!

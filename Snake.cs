@@ -76,6 +76,9 @@ namespace Snake
 
         public void ResetSnake()
         {
+            // Ensure the snake isn't moving to start with
+            this.SetDirection(Direction.None);
+
             // Give an initial position that's in the center
             Vector2 initialPos = new Vector2()
             {
@@ -93,11 +96,9 @@ namespace Snake
             {
                 // Create a new piece
                 snakePieces.Add(new Piece(initialPos));
-                // Change the vector for the other initial pieces
-                initialPos.X -= snakeSize;
+                // Change the vector for the other initial pieces if the snake shouldn't start on top of itself
+                //initialPos.X -= snakeSize;
             }
-            // Ensure the snake isn't moving to start with
-            this.SetDirection(Direction.None);
         }
 
         public void SetDirection(Direction dir)
@@ -118,6 +119,10 @@ namespace Snake
             else if (dir == Direction.Right && this.direction != Direction.Left)
             {
                 this.direction = Direction.Right;
+            }
+            else if (dir == Direction.None)
+            {
+                this.direction = Direction.None;
             }
         }
 
