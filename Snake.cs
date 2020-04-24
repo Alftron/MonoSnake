@@ -72,6 +72,36 @@ namespace Snake
         public void Grow()
         {
             // Eaten some food so increase the length but be wary of the snaking pattern/direction
+            Piece tailEnd = snakePieces[snakePieces.Count() - 1];
+            Piece tailBone = snakePieces[snakePieces.Count() - 2];
+            Vector2 newPos = new Vector2();
+            if (tailEnd.GetPosition().X == tailBone.GetPosition().X)
+            {
+                if (tailEnd.GetPosition().Y > tailBone.GetPosition().Y)
+                {
+                    newPos.X = tailEnd.GetPosition().X;
+                    newPos.Y = tailEnd.GetPosition().Y + 1;
+                }
+                else
+                {
+                    newPos.X = tailEnd.GetPosition().X;
+                    newPos.Y = tailEnd.GetPosition().Y - 1;
+                }
+            }
+            else if (tailEnd.GetPosition().Y == tailBone.GetPosition().Y)
+            {
+                if (tailEnd.GetPosition().X > tailBone.GetPosition().X)
+                {
+                    newPos.X = tailEnd.GetPosition().X + 1;
+                    newPos.Y = tailEnd.GetPosition().Y;
+                }
+                else
+                {
+                    newPos.X = tailEnd.GetPosition().X - 1;
+                    newPos.Y = tailEnd.GetPosition().Y;
+                }
+            }
+            snakePieces.Add(new Piece(newPos));
         }
 
         public void ResetSnake()
