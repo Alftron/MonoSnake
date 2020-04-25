@@ -44,8 +44,8 @@ namespace Snake
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            graphics.PreferredBackBufferHeight = 600;
-            graphics.PreferredBackBufferWidth = 800;
+            graphics.PreferredBackBufferHeight = 300;
+            graphics.PreferredBackBufferWidth = 500;
             graphics.ApplyChanges();
 
         }
