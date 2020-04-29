@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Snake
 {
@@ -14,13 +15,18 @@ namespace Snake
 
         enum GameState
         {
-            Stopped,
-            Running,
-            Lost
+            Menu, // Intro menu
+            Stopped, // Lost a life so stopped
+            Running, // Game is running,
+            Lost // Game over
         }
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+
+        SpriteFont font_s12;
+        SpriteFont font_s22;
+        SpriteFont font_s40;
 
         private Snake snake;
         private Food food;
@@ -33,11 +39,13 @@ namespace Snake
         private const int initialSpeed = 60;
         private const int maxSpeed = 18;
         private const int speedIncrease = 1;
+        private const int initialLives = 3;
         private int updateInterval = 60;
 
         private int milliSinceUpdate = 0;
 
         private int score = 0;
+        private int lives = initialLives;
 
         public SnakeGame()
         {
@@ -60,6 +68,7 @@ namespace Snake
                 snakeHeadPos.Y < 0 || snakeHeadPos.Y >= graphics.GraphicsDevice.Viewport.Height)
             {
                 // Hit one of the walls so lose a life, reset snake and food
+                lives--;
                 snake.ResetSnake();
                 this.SpawnFood();
                 updateInterval = initialSpeed;
@@ -78,6 +87,7 @@ namespace Snake
             if (hit)
             {
                 // Hit body so lose a life, reset snake and food
+                lives--;
                 snake.ResetSnake();
                 this.SpawnFood();
                 updateInterval = initialSpeed;
@@ -153,11 +163,16 @@ namespace Snake
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            // Add the fonts
+            font_s12 = Content.Load<SpriteFont>("Fonts/Font_S12");
+            font_s22 = Content.Load<SpriteFont>("Fonts/Font_S22");
+            font_s40 = Content.Load<SpriteFont>("Fonts/Font_S40");
+
             // TODO: use this.Content to load your game content here
             snake = new Snake(graphics.GraphicsDevice, spriteBatch, snakeSize);
             food = new Food(graphics.GraphicsDevice, spriteBatch, foodSize);
             randomNum = new Random();
-            gameState = GameState.Stopped;
+            gameState = GameState.Menu;
         }
 
         /// <summary>
@@ -179,11 +194,14 @@ namespace Snake
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+
             // Set game to run in direction pressed to start, bit gross but it works
-            if (gameState == GameState.Stopped)
+            if (gameState == GameState.Menu || gameState == GameState.Stopped || gameState == GameState.Lost)
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.Up))
                 {
+                    // Reset lives if we need to
+                    if (gameState == GameState.Lost) this.lives = initialLives;
                     // Start the game off (again)
                     gameState = GameState.Running;
                     // Set a direction to get the snake moving
@@ -193,6 +211,8 @@ namespace Snake
                 }
                 else if (Keyboard.GetState().IsKeyDown(Keys.Down))
                 {
+                    // Reset lives if we need to
+                    if (gameState == GameState.Lost) this.lives = initialLives;
                     // Start the game off (again)
                     gameState = GameState.Running;
                     // Set a direction to get the snake moving
@@ -202,6 +222,8 @@ namespace Snake
                 }
                 else if (Keyboard.GetState().IsKeyDown(Keys.Left))
                 {
+                    // Reset lives if we need to
+                    if (gameState == GameState.Lost) this.lives = initialLives;
                     // Start the game off (again)
                     gameState = GameState.Running;
                     // Set a direction to get the snake moving
@@ -211,6 +233,8 @@ namespace Snake
                 }
                 else if (Keyboard.GetState().IsKeyDown(Keys.Right))
                 {
+                    // Reset lives if we need to
+                    if (gameState == GameState.Lost) this.lives = initialLives;
                     // Start the game off (again)
                     gameState = GameState.Running;
                     // Set a direction to get the snake moving
@@ -247,6 +271,7 @@ namespace Snake
                     milliSinceUpdate = 0;
                     snake.Update();
                     this.CheckCollision();
+                    if (lives == 0) gameState = GameState.Lost;
                 }
             }
 
@@ -262,11 +287,34 @@ namespace Snake
             GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
+            // Draw the introduction screen and instructions
+            if (gameState == GameState.Menu)
+            {
+                spriteBatch.Begin();
+                spriteBatch.DrawString(font_s40, "ssssSNAKE ", new Vector2(0,0), Color.White);
+                spriteBatch.DrawString(font_s12, "Press any arrow key to start", new Vector2(0, graphics.GraphicsDevice.Viewport.Height - 20), Color.White);
+                spriteBatch.End();
+            }
+            
+            // Draw the game running    
             snake.Draw();
             if (gameState == GameState.Running)
             {
                 food.Draw();
             }
+
+            // Draw the game over screen
+            if (gameState == GameState.Lost)
+            {
+                //StringBuilder scoreText = "Score: " + score + " Press any arrow key to retry";
+                String scoreText = string.Format("Score: {0}                      Press any arrow key to retry!", this.score);
+                spriteBatch.Begin();
+                spriteBatch.DrawString(font_s40, "GAME OVER ", new Vector2(0, 0), Color.White);
+                spriteBatch.DrawString(font_s12, scoreText, new Vector2(0, graphics.GraphicsDevice.Viewport.Height - 20), Color.White);
+                spriteBatch.End();
+            }
+
+            // Draw the game over screen and instructions
             base.Draw(gameTime);
         }
     }
